@@ -2,21 +2,27 @@
 <?php
 
 require __DIR__.'/vendor/autoload.php';
+require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
 while (true) {
-    $request = getNextRequest();
+    $client = new \GuzzleHttp\Client();
+
+    $request = getNextRequest($client);
 
     $handlerFunction = array_slice(explode('.', $_ENV['_HANDLER']), -1)[0];
-    require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
-    $response = $handlerFunction($request['payload']);
+    try {
+        $response = $handlerFunction($request['payload']);
+    } catch (\Exception $e) {
+        handleInvocationError($client, $request['invocationId'], $e);
+        continue;
+    }
 
     sendResponse($request['invocationId'], $response);
 }
 
-function getNextRequest()
+function getNextRequest($client): array
 {
-    $client = new \GuzzleHttp\Client();
     $response = $client->get('http://'.$_ENV['AWS_LAMBDA_RUNTIME_API'].'/2018-06-01/runtime/invocation/next');
 
     return [
@@ -25,11 +31,18 @@ function getNextRequest()
     ];
 }
 
-function sendResponse($invocationId, $response)
+function sendResponse($client, $invocationId, $response)
 {
-    $client = new \GuzzleHttp\Client();
     $client->post(
-    'http://' . $_ENV['AWS_LAMBDA_RUNTIME_API'] . '/2018-06-01/runtime/invocation/' . $invocationId . '/response',
+        'http://' . $_ENV['AWS_LAMBDA_RUNTIME_API'] . '/2018-06-01/runtime/invocation/' . $invocationId . '/response',
+        ['body' => $response]
+    );
+}
+
+function handleInvocationError($client, $invocationId, \Exception $e)
+{
+    $client->post(
+        'http://' . $_ENV['AWS_LAMBDA_RUNTIME_API'] . '/2018-06-01/runtime/invocation/' . $invocationId . '/error',
         ['body' => $response]
     );
 }

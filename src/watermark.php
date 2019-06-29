@@ -11,7 +11,7 @@ function watermark($data)
     ]);
 
     if (!isset($data['Records'])) {
-        return "Not a S3 Event";
+        throw new \Exception("Not a S3 Event");
     }
 
     $key = $data['Records'][0]['s3']['object']['key'];
