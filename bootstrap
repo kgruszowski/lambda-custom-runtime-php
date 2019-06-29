@@ -2,7 +2,6 @@
 <?php
 
 require __DIR__.'/vendor/autoload.php';
-require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
 while (true) {
     $client = new \GuzzleHttp\Client();
@@ -10,6 +9,7 @@ while (true) {
     $request = getNextRequest($client);
 
     $handlerFunction = array_slice(explode('.', $_ENV['_HANDLER']), -1)[0];
+    require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
     try {
         $response = $handlerFunction($request['payload']);
