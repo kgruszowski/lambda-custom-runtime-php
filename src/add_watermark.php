@@ -1,6 +1,6 @@
 <?php
 
-function watermark($data)
+function add_watermark($data)
 {
     $credentials = new \Aws\Credentials\Credentials($_ENV['public_key'], $_ENV['secret_key']);
 
