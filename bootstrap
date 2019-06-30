@@ -50,9 +50,14 @@ function handleInvocationError($client, $invocationId, \Exception $e)
     $client->post(
         'http://' . $_ENV['AWS_LAMBDA_RUNTIME_API'] . '/2018-06-01/runtime/invocation/' . $invocationId . '/error',
         [
-            'errorType' => 'CustomInvocationError',
-            'errorMessage' => $e->getMessage(),
-            'stackTrace' => $e->getTraceAsString()
+            'body' => [
+                'errorType' => 'CustomInvocationError',
+                'errorMessage' => $e->getMessage(),
+                'stackTrace' => $e->getTraceAsString()
+            ],
+            'headers' => [
+                "Lambda-Runtime-Function-Error-Type" => "Unhandled"
+            ]
         ]
     );
 }
