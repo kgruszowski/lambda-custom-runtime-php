@@ -1,21 +1,25 @@
 #!/opt/bin/php
 <?php
 
+// require vendors from layer
 require __DIR__.'/vendor/autoload.php';
 
+// require file with function basing on ENV configuration
+$handlerFunction = array_slice(explode('.', $_ENV['_HANDLER']), -1)[0];
+require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
+
+// Generate random number to test Lambda Execution Context
 $sharedRandom = rand();
 
+$client = new \GuzzleHttp\Client();
+
 while (true) {
-    $client = new \GuzzleHttp\Client();
-
     $request = getNextRequest($client);
-
-    $handlerFunction = array_slice(explode('.', $_ENV['_HANDLER']), -1)[0];
-    require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
     try {
         $response = $handlerFunction($request['payload'], $sharedRandom);
     } catch (\Exception $e) {
+        // Handle invocation error and notify Runtime API
         handleInvocationError($client, $request['invocationId'], $e);
         continue;
     }
