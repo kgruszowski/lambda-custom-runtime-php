@@ -1,6 +1,6 @@
 <?php
 
-function add_watermark($data)
+function add_watermark($data, $sharedRandom)
 {
     $credentials = new \Aws\Credentials\Credentials($_ENV['public_key'], $_ENV['secret_key']);
 
@@ -37,6 +37,8 @@ function add_watermark($data)
         'Key' => "watermarked/".$path[1],
         'Body' => $image_contents
     ]);
+
+    print $sharedRandom;
 
     return 'Watermark added';
 }

@@ -3,6 +3,8 @@
 
 require __DIR__.'/vendor/autoload.php';
 
+$sharedRandom = rand();
+
 while (true) {
     $client = new \GuzzleHttp\Client();
 
@@ -12,7 +14,7 @@ while (true) {
     require_once $_ENV['LAMBDA_TASK_ROOT'] . '/src/' . $handlerFunction . '.php';
 
     try {
-        $response = $handlerFunction($request['payload']);
+        $response = $handlerFunction($request['payload'], $sharedRandom);
     } catch (\Exception $e) {
         handleInvocationError($client, $request['invocationId'], $e);
         continue;
