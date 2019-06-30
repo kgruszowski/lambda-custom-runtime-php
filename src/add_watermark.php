@@ -38,7 +38,7 @@ function add_watermark($data, $sharedRandom)
         'Body' => $image_contents
     ]);
 
-    print $sharedRandom;
+    print sprintf("Random number initialized in the runtime: %d", $sharedRandom).PHP_EOL;
 
     return 'Watermark added';
 }
