@@ -37,7 +37,7 @@ Follow this step by step guide to use Lambda custom runtime for running PHP code
 1. Prepare layers (make note about ARN of every layer that you published, it will be needed to create lambda function)
     1. Custom runtime layer
         ```
-            aws lambda publish-layer-version --layer-name php-custom-runtime --zip-file fileb://runtime.zip
+        aws lambda publish-layer-version --layer-name php-custom-runtime --zip-file fileb://runtime.zip
         ```
     1. Layer with vendor files
         ```
