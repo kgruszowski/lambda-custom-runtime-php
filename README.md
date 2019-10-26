@@ -37,7 +37,7 @@ Follow this step by step guide to use Lambda custom runtime for running PHP code
     zip -r vendor.zip vendor/
     zip add_watermark.zip src/add_watermark.php
     ```
-1. Create IAM role and attach **AWSLambdaBasicExecutionRole** policy
+1. Create IAM role and attach **AWSLambdaBasicExecutionRole** and **S3FullAccess** policies
 1. Configure [AWS CLI tool](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) 
 1. Prepare layers (make note about ARN of every layer that you published, it will be needed to create lambda function)
     1. Custom runtime layer
@@ -51,15 +51,15 @@ Follow this step by step guide to use Lambda custom runtime for running PHP code
 1. Create function
     ```
     aws lambda create-function \
-    --function-name watermark-php \
-    --zip-file fileb://watermark.zip \
-    --handler watermark \
+    --function-name add_watermark-php \
+    --zip-file fileb://add_watermark.zip \
+    --handler add_watermark \
     --role "{ARN_OF_CREATED_ROLE}" \
     --runtime provided \
     --layers "{ARN_OF_RUNTIME_LAYER}" "{ARN_OF_VENDOR_LAYER}"
     ```
 1. In Lambda Configuration Designer set environment variables **public_key** and **secret_key** ([access key documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)) 
-1. Create an S3 bucket with two folders inside (origin, watermark)
+1. Create an S3 bucket with two folders inside (origin, watermarkedg)
 1. Create an S3 Trigger in Lambda Configuration Designer
     * in Designer sidebar choose **S3**
     * choose bucket you've created
