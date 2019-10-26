@@ -31,7 +31,7 @@ function add_watermark($data, $sharedRandom)
     $result = $s3->putObject([
         'ContentType' => $result['ContentType'],
         'Bucket' => $data['Records'][0]['s3']['bucket']['name'],
-        'Key' => "watermarked/".$path[1],
+        'Key' => 'watermarked/'.str_replace('.', '_with_schibsted_logo.', $path[1]),
         'Body' => $image_contents
     ]);
 
