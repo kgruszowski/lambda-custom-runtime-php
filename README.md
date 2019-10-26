@@ -22,9 +22,14 @@ Follow this step by step guide to use Lambda custom runtime for running PHP code
         ```
 1. Clone repository `cd ~; git clone https://github.com/kgruszowski/lambda-custom-runtime-php.git`
 1. Copy PHP interpreter `cp ~/php-7.3-bin/bin/php ~/lambda-custom-runtime-php/bin`
+1. Enter to working directory
 1. Install Composer
     ```
     curl -sS http://getcomposer.org/installer | ./bin/php
+    ```
+1. Install dependencies
+    ```
+    ./bin/php composer.phar install
     ```
 1. Make zip files necessary to deploy code
     ```

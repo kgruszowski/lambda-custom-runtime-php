@@ -2,12 +2,9 @@
 
 function add_watermark($data, $sharedRandom)
 {
-    $credentials = new \Aws\Credentials\Credentials($_ENV['public_key'], $_ENV['secret_key']);
-
     $s3 = new \Aws\S3\S3Client([
         'region'  => 'eu-central-1',
         'version' => 'latest',
-        'credentials' => $credentials
     ]);
 
     if (!isset($data['Records'])) {
